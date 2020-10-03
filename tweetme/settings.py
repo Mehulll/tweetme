@@ -152,6 +152,9 @@ if DEBUG:
     # DEFAULT_AUTHENTICATION_CLASSES += [
     #     'tweetme.rest_api.dev.DevAuthentication'
     # ]
+    DEFAULT_AUTHENTICATION_CLASSES += [
+        'tweetme.rest_api.dev.DevAuthentication'
+    ]
 REST_FRAMEWORK = {
     
     'DEFAULT_AUTHENTICATION_CLASSES': DEFAULT_AUTHENTICATION_CLASSES,
