@@ -3,10 +3,10 @@ from django.conf import settings
 from django.shortcuts import render , redirect
 from django.http import HttpResponse,Http404,JsonResponse
 from django.utils.http import is_safe_url
-
 from django.views.decorators.csrf import csrf_exempt, csrf_protect
 from rest_framework.authentication import SessionAuthentication
 from rest_framework.decorators import api_view ,authentication_classes, permission_classes
+from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from ..forms import TweetForm
@@ -88,13 +88,19 @@ def tweet_action_view(request , *args , **kwargs):
             return Response(serializer.data,status = 201)
     return Response({},status = 200)
 
+def get_paginated_queryset_response(qs, request):
+    paginator = PageNumberPagination()
+    paginator.page_size = 20
+    paginated_qs = paginator.paginate_queryset(qs, request)
+    serializer = TweetSerializer(paginated_qs, many=True)
+    return paginator.get_paginated_response(serializer.data) # Response( serializer.data, status=200)
+
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def tweet_feed_view(request, *args, **kwargs):
     user = request.user
     qs = Tweet.objects.feed(user)
-    serializer = TweetSerializer(qs, many=True)
-    return Response( serializer.data, status=200)
+    return get_paginated_queryset_response(qs, request)
 
 
 @api_view(['GET'])
@@ -103,8 +109,7 @@ def tweet_list_view(request , *args , **kwargs):
     username = request.GET.get('username')
     if username != None:
       qs = qs.by_username(username)
-    serializer = TweetSerializer(qs,many = True)
-    return Response(serializer.data,status = 200)
+    return get_paginated_queryset_response(qs, request)
 
     
 def tweet_create_view_pure_django(request , *args , **kwargs):
