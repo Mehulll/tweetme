@@ -89,6 +89,20 @@ def tweet_action_view(request , *args , **kwargs):
     return Response({},status = 200)
 
 @api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def tweet_feed_view(request, *args, **kwargs):
+    user = request.user
+    profiles = user.following.all()
+    followed_users_id = []
+    if profiles.exists():
+        followed_users_id = [x.user.id for x in profiles]
+    followed_users_id.append(user.id)
+    qs = Tweet.objects.filter(user__id__in=followed_users_id).order_by("-timestamp")
+    serializer = TweetSerializer(qs, many=True)
+    return Response( serializer.data, status=200)
+
+
+@api_view(['GET'])
 def tweet_list_view(request , *args , **kwargs):
     qs = Tweet.objects.all()
     username = request.GET.get('username')
@@ -96,6 +110,7 @@ def tweet_list_view(request , *args , **kwargs):
       qs = qs.filter(user__username__iexact = username)
     serializer = TweetSerializer(qs,many = True)
     return Response(serializer.data,status = 200)
+
     
 def tweet_create_view_pure_django(request , *args , **kwargs):
     '''
