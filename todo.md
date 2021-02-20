@@ -1,20 +1,31 @@
-1. Users
-   -> Register
-   -> Login
-   -> Profile
-       -> Image?
-       -> Text?
+1. Tweets
+    -> User Permissions
+        -> Creating
+            -> Text
+            -> Image -> Media Storage Server
+        -> Delete
+        -> Retweeting
+            -> Read only serializer
+            -> Create only serializer
+        -> Liking or Unliking
+
+2. Users
+    -> Register
+    -> Login
+    -> Logout
+    -> Profile
+        -> Image?
+        -> Text?
+        -> Follow Button
     -> Feed
-        -> User feed only
+        -> User's feed only?
         -> User + who they follow?
-2. Tweets
-    -> creating
-        -> Text
-        -> Image
-    -> Deleting
-    -> Retweeting
-    ->Liking
 
-3. Following/ Followers
+3. Following / Followers
 
-Long term 
+
+Next Steps:
+- Large File Uploads for Images ~ Dive into AWS
+- Notifications
+- Direct Messages / Private Inboxes ~ Chat x Channels
+- Explore -> parse & filter for hashtags
